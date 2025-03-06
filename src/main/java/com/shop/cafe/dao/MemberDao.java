@@ -3,6 +3,7 @@ package com.shop.cafe.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -24,17 +25,42 @@ public class MemberDao {
 	
 	@Value("${spring.datasource.password}")
 	private String DB_PW;
+
+
+	public Member login(Member m) throws Exception {
+		
+		Class.forName(DB_DRIVER);
+		// db가 있고 table이 있는데 data가 하나도 없음
+		String sql = "select * from member where email = '" + m.getEmail() + "' and pwd = '" + m.getPwd() + "' ";
+		try(
+			Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PW);
+			
+			// PreparedStatement 아니고 Statement
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			){
+			
+			if(rs.next()) {
+				String nickname = rs.getString("nickname");
+				m.setNickname(nickname);
+				return m;
+			} else {
+				return null;
+			}
+
+		}
+		
+	}
+	
 	
 	// 원래 exception으로 퉁치면 안됨. 지금 코드 엉망임~
 	public void insertMember(Member m) throws Exception {
 		Class.forName(DB_DRIVER);
-		
 		// db가 있고 table이 있는데 data가 하나도 없음
 		String sql = "insert into member(nickname, pwd, email) values(?, ?, ?)";
 		try(
 			Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PW);
 			
-			// PreparedStatement 아니고 Statement
 			PreparedStatement stmt = con.prepareStatement(sql);
 				
 			){
@@ -45,4 +71,5 @@ public class MemberDao {
 			System.out.println(i + "행이 insert 되었습니당");
 		}
 	}
+
 }

@@ -11,7 +11,7 @@ import com.shop.cafe.dto.Product;
 import com.shop.cafe.service.ProductService;
 
 @RestController // 응답 템플릿을 갖지 않음 그냥 java코드 그대로!
-@CrossOrigin("http://127.0.0.1:5500") // 프론트 서버 연동
+// @CrossOrigin("http://127.0.0.1:8080") // 프론트 서버 연동
 public class ProductController {
 	
 	@Autowired // = new // DI : 자동 객체 주입
